@@ -648,17 +648,148 @@
 <div class="cursor" id="cursor"></div>
 <div class="cursor-ring" id="cursorRing"></div>
 
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo"><img src="logo.png" alt="AMPLTD">AMPLTD</a>
+  <!-- <ul class="nav-links">
+    <li><a href="#olive">Olive</a></li>
+    <li><a href="#vision">Vision</a></li>
+    <li><a href="#about">Company</a></li>
+  </ul> -->
+</nav>
+
 <!-- HERO -->
-<section class="hero">
+<section class="hero" id="hero">
   <!-- <div class="hero-bg"></div> -->
   <!-- <canvas class="hero-orb-canvas" id="heroOrbCanvas"></canvas> -->
 
   <div class="hero-content">
     <h1 class="hero-title">AMPLTD</h1>
     <p class="hero-tagline">Intelligence Personified</p>
+    <a href="#olive" class="hero-cta">
+      Explore our work
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+        <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </a>
   </div>
 
+  <div class="hero-scroll">
+    <div class="scroll-line"></div>
+    <span class="scroll-label">Scroll</span>
+  </div>
 </section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="about">
+    <div class="about-left reveal">
+      <p class="section-label">The Company</p>
+      <h2>We build intelligence that knows you</h2>
+      <p>AMPLTD is building the next layer of personal intelligence. Not tools you visit. A presence that lives with you, across every device, every surface, every moment.</p>
+    </div>
+    <div class="about-right reveal reveal-delay-2">
+      <div class="about-stat">
+        <span class="stat-num">∞</span>
+        <span class="stat-label">Memory, across every device</span>
+      </div>
+      <div class="about-stat">
+        <span class="stat-num">01</span>
+        <span class="stat-label">Product line: Olive</span>
+      </div>
+      <div class="about-stat">
+        <span class="stat-num">2026</span>
+        <span class="stat-label">Building in public</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- OLIVE -->
+<section class="olive-section" id="olive">
+  <div class="olive-orb-wrap">
+    <canvas class="olive-orb-canvas" id="oliveOrbCanvas"></canvas>
+  </div>
+
+  <div class="olive-inner">
+    <div class="olive-header reveal">
+      <div class="olive-title-wrap">
+        <h2 class="olive-title">Oli<span>ve</span></h2>
+      </div>
+    </div>
+
+    <div class="products-grid">
+      <div class="product-card reveal reveal-delay-1">
+        <div class="product-icon">🌐</div>
+        <div class="product-name">Olive Web</div>
+        <div class="product-sub">Full-featured conversational interface with voice and text. The canonical Olive experience, available on any device with no installation required.</div>
+        <span class="product-tag tag-live">Live</span>
+      </div>
+      <div class="product-card reveal reveal-delay-2">
+        <div class="product-icon">🧩</div>
+        <div class="product-name">Olive Extension</div>
+        <div class="product-sub">Inline intelligence at the browser layer. Olive reads, acts, and executes across any website without interrupting your workflow.</div>
+        <span class="product-tag tag-soon">Coming soon</span>
+      </div>
+      <div class="product-card reveal reveal-delay-3">
+        <div class="product-icon">📱</div>
+        <div class="product-name">Olive Mobile</div>
+        <div class="product-sub">The full Olive experience, native to iOS and Android. Persistent memory and voice access, synchronized across every surface.</div>
+        <span class="product-tag tag-soon">Coming soon</span>
+      </div>
+      <div class="product-card reveal reveal-delay-4">
+        <div class="product-icon">💻</div>
+        <div class="product-name">Olive Desktop</div>
+        <div class="product-sub">Deep system-level access for complex, long-horizon tasks. File operations, application control, and autonomous execution on your machine.</div>
+        <span class="product-tag tag-soon">Coming soon</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- VISION -->
+<section id="vision">
+  <div class="vision">
+    <div class="vision-grid">
+      <div class="vision-card reveal reveal-delay-1">
+        <div class="vision-num">01</div>
+        <h3>Memory is the foundation</h3>
+        <p>Most AI forgets you the moment you close the tab. We believe intelligence without persistent memory is not intelligence. It is autocomplete.</p>
+      </div>
+      <div class="vision-card reveal reveal-delay-2">
+        <div class="vision-num">02</div>
+        <h3>Action over answers</h3>
+        <p>The world has enough chatbots. We are building intelligence that executes tasks, decisions, and actions across every surface you live on.</p>
+      </div>
+      <div class="vision-card reveal reveal-delay-3">
+        <div class="vision-num">03</div>
+        <h3>Presence, not software</h3>
+        <p>We are not building an app you open. We are building something that lives alongside you. Aware, ambient, and completely yours.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TAGLINE -->
+<section class="tagline-section">
+  <div class="tagline-bg"></div>
+  <blockquote class="reveal">
+    "We are not building a better assistant.<br><em>We are building the first one that actually knows you.</em>"
+  </blockquote>
+  <p class="tagline-attr reveal reveal-delay-2">The AMPLTD Thesis</p>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div>
+    <div class="footer-logo">AMPLTD</div>
+    <div class="footer-sub">Intelligence Personified</div>
+  </div>
+  <div class="footer-right">
+    <!-- <div><a href="https://ampltd.ai" style="color: inherit; text-decoration: none;">ampltd.ai</a></div> -->
+    <div style="margin-top:4px; font-size:11px;">© 2026 AMPLTD. All rights reserved.</div>
+  </div>
+</footer>
 
 <script>
   // Nav scroll state
