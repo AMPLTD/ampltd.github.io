@@ -4,6 +4,17 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AMPLTD — Intelligence Personified</title>
+<meta name="description" content="AMPLTD is building the next layer of personal intelligence. Meet Olive — the AI that remembers everything.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="AMPLTD — Intelligence Personified">
+<meta property="og:description" content="AMPLTD is building the next layer of personal intelligence. Meet Olive — the AI that remembers everything.">
+<meta property="og:url" content="https://ampltd.ai">
+<meta property="og:site_name" content="AMPLTD">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="AMPLTD — Intelligence Personified">
+<meta name="twitter:description" content="AMPLTD is building the next layer of personal intelligence. Meet Olive — the AI that remembers everything.">
+<link rel="canonical" href="https://ampltd.ai">
+<link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@300;400;600;700;900&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
@@ -73,7 +84,17 @@
     align-items: center;
     justify-content: space-between;
     padding: 28px 60px;
-    mix-blend-mode: multiply;
+    transition: background 0.35s ease, backdrop-filter 0.35s ease, border-color 0.35s ease, padding 0.35s ease;
+    border-bottom: 1px solid transparent;
+  }
+
+  nav.scrolled {
+    background: rgba(250,250,248,0.82);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom-color: var(--stone);
+    padding-top: 18px;
+    padding-bottom: 18px;
   }
 
   .nav-logo {
@@ -582,6 +603,26 @@
   .reveal-delay-2 { transition-delay: 0.2s; }
   .reveal-delay-3 { transition-delay: 0.3s; }
   .reveal-delay-4 { transition-delay: 0.4s; }
+
+  /* Touch — hide custom cursor */
+  @media (hover: none) {
+    body { cursor: auto; }
+    .cursor, .cursor-ring { display: none; }
+  }
+
+  /* Respect reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+    .reveal {
+      opacity: 1;
+      transform: none;
+    }
+  }
 </style>
 </head>
 <body>
@@ -731,12 +772,18 @@
     <div class="footer-sub">Intelligence Personified</div>
   </div>
   <div class="footer-right">
-    <div>ampltd.ai</div>
-    <div style="margin-top:4px; font-size:11px;">© 2025 AMPLTD. All rights reserved.</div>
+    <div><a href="https://ampltd.ai" style="color: inherit; text-decoration: none;">ampltd.ai</a></div>
+    <div style="margin-top:4px; font-size:11px;">© 2026 AMPLTD. All rights reserved.</div>
   </div>
 </footer>
 
 <script>
+  // Nav scroll state
+  const navEl = document.querySelector('nav');
+  window.addEventListener('scroll', () => {
+    navEl.classList.toggle('scrolled', window.scrollY > 40);
+  }, { passive: true });
+
   // Custom cursor
   const cursor = document.getElementById('cursor');
   const ring = document.getElementById('cursorRing');
