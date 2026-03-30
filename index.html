@@ -3,18 +3,18 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AMPLTD — Intelligence Personified</title>
-<meta name="description" content="AMPLTD is building the next layer of personal intelligence. Meet Olive — the AI that remembers everything.">
+<title>AMPLTD</title>
+<meta name="description" content="AMPLTD is building the next layer of personal intelligence. Meet Olive, the AI that remembers everything.">
 <meta property="og:type" content="website">
-<meta property="og:title" content="AMPLTD — Intelligence Personified">
-<meta property="og:description" content="AMPLTD is building the next layer of personal intelligence. Meet Olive — the AI that remembers everything.">
+<meta property="og:title" content="AMPLTD | Intelligence Personified">
+<meta property="og:description" content="AMPLTD is building the next layer of personal intelligence. Meet Olive, the AI that remembers everything.">
 <meta property="og:url" content="https://ampltd.ai">
 <meta property="og:site_name" content="AMPLTD">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="AMPLTD — Intelligence Personified">
-<meta name="twitter:description" content="AMPLTD is building the next layer of personal intelligence. Meet Olive — the AI that remembers everything.">
+<meta name="twitter:title" content="AMPLTD | Intelligence Personified">
+<meta name="twitter:description" content="AMPLTD is building the next layer of personal intelligence. Meet Olive, the AI that remembers everything.">
 <link rel="canonical" href="https://ampltd.ai">
-<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="logo.png" sizes="any">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@300;400;600;700;900&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
@@ -98,12 +98,21 @@
   }
 
   .nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
     font-family: 'Unbounded', sans-serif;
     font-weight: 700;
     font-size: 15px;
     letter-spacing: 0.08em;
     color: var(--dark);
     text-decoration: none;
+  }
+
+  .nav-logo img {
+    width: 28px;
+    height: 28px;
+    display: block;
   }
 
   .nav-links {
@@ -166,6 +175,15 @@
     margin-bottom: 32px;
     opacity: 0;
     animation: fadeUp 0.8s ease 0.2s forwards;
+  }
+
+  .hero-logo {
+    width: 72px;
+    height: 72px;
+    margin: 0 auto 36px;
+    display: block;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.1s forwards;
   }
 
   .hero-title {
@@ -632,25 +650,24 @@
 
 <!-- NAV -->
 <nav>
-  <a href="#" class="nav-logo">AMPLTD</a>
-  <ul class="nav-links">
+  <a href="#" class="nav-logo"><img src="logo.png" alt="AMPLTD">AMPLTD</a>
+  <!-- <ul class="nav-links">
     <li><a href="#olive">Olive</a></li>
     <li><a href="#vision">Vision</a></li>
     <li><a href="#about">Company</a></li>
-  </ul>
+  </ul> -->
 </nav>
 
 <!-- HERO -->
 <section class="hero" id="hero">
-  <div class="hero-bg"></div>
-  <canvas class="hero-orb-canvas" id="heroOrbCanvas"></canvas>
+  <!-- <div class="hero-bg"></div> -->
+  <!-- <canvas class="hero-orb-canvas" id="heroOrbCanvas"></canvas> -->
 
   <div class="hero-content">
-    <p class="hero-eyebrow">ampltd.ai &nbsp;·&nbsp; est. 2025</p>
     <h1 class="hero-title">AMPLTD</h1>
     <p class="hero-tagline">Intelligence Personified</p>
     <a href="#olive" class="hero-cta">
-      Meet Olive
+      Explore our work
       <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
         <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
@@ -669,7 +686,7 @@
     <div class="about-left reveal">
       <p class="section-label">The Company</p>
       <h2>We build intelligence that knows you</h2>
-      <p>AMPLTD is building the next layer of personal intelligence. Not tools you visit — a presence that lives with you. Across every device, every surface, every moment.</p>
+      <p>AMPLTD is building the next layer of personal intelligence. Not tools you visit. A presence that lives with you, across every device, every surface, every moment.</p>
     </div>
     <div class="about-right reveal reveal-delay-2">
       <div class="about-stat">
@@ -678,10 +695,10 @@
       </div>
       <div class="about-stat">
         <span class="stat-num">01</span>
-        <span class="stat-label">Product line — Olive</span>
+        <span class="stat-label">Product line: Olive</span>
       </div>
       <div class="about-stat">
-        <span class="stat-num">2025</span>
+        <span class="stat-num">2026</span>
         <span class="stat-label">Building in public</span>
       </div>
     </div>
@@ -697,35 +714,33 @@
   <div class="olive-inner">
     <div class="olive-header reveal">
       <div class="olive-title-wrap">
-        <p class="section-label">Product Line 01</p>
         <h2 class="olive-title">Oli<span>ve</span></h2>
       </div>
-      <p class="olive-desc">One AI. Every surface. She remembers everything — your habits, your preferences, your life. Olive isn't an app you open. She's always already there.</p>
     </div>
 
     <div class="products-grid">
       <div class="product-card reveal reveal-delay-1">
         <div class="product-icon">🌐</div>
         <div class="product-name">Olive Web</div>
-        <div class="product-sub">Chat, voice mode, and deep conversation. Your home base with Olive — accessible from any browser, anywhere.</div>
+        <div class="product-sub">Full-featured conversational interface with voice and text. The canonical Olive experience, available on any device with no installation required.</div>
         <span class="product-tag tag-live">Live</span>
       </div>
       <div class="product-card reveal reveal-delay-2">
         <div class="product-icon">🧩</div>
         <div class="product-name">Olive Extension</div>
-        <div class="product-sub">Olive lives in your browser. Add items to cart, subscribe to channels, act on any site — without switching context.</div>
+        <div class="product-sub">Inline intelligence at the browser layer. Olive reads, acts, and executes across any website without interrupting your workflow.</div>
         <span class="product-tag tag-soon">Coming soon</span>
       </div>
       <div class="product-card reveal reveal-delay-3">
         <div class="product-icon">📱</div>
         <div class="product-name">Olive Mobile</div>
-        <div class="product-sub">Always in your pocket. Chat and voice mode with the same Olive you know — with full shared memory.</div>
+        <div class="product-sub">The full Olive experience, native to iOS and Android. Persistent memory and voice access, synchronized across every surface.</div>
         <span class="product-tag tag-soon">Coming soon</span>
       </div>
       <div class="product-card reveal reveal-delay-4">
         <div class="product-icon">💻</div>
         <div class="product-name">Olive Desktop</div>
-        <div class="product-sub">Native power. File analysis, computer access, and deep task execution. Olive on your laptop, unleashed.</div>
+        <div class="product-sub">Deep system-level access for complex, long-horizon tasks. File operations, application control, and autonomous execution on your machine.</div>
         <span class="product-tag tag-soon">Coming soon</span>
       </div>
     </div>
@@ -735,22 +750,21 @@
 <!-- VISION -->
 <section id="vision">
   <div class="vision">
-    <p class="section-label reveal">The Vision</p>
     <div class="vision-grid">
       <div class="vision-card reveal reveal-delay-1">
         <div class="vision-num">01</div>
-        <h3>Never Forgets</h3>
-        <p>Every conversation, every action, every preference. Olive builds a persistent understanding of your world — across every surface, forever.</p>
+        <h3>Memory is the foundation</h3>
+        <p>Most AI forgets you the moment you close the tab. We believe intelligence without persistent memory is not intelligence. It is autocomplete.</p>
       </div>
       <div class="vision-card reveal reveal-delay-2">
         <div class="vision-num">02</div>
-        <h3>Always Acts</h3>
-        <p>Not just answers — actions. Olive executes tasks on your behalf across browsers, apps, files, and devices without you lifting a finger.</p>
+        <h3>Action over answers</h3>
+        <p>The world has enough chatbots. We are building intelligence that executes tasks, decisions, and actions across every surface you live on.</p>
       </div>
       <div class="vision-card reveal reveal-delay-3">
         <div class="vision-num">03</div>
-        <h3>Truly Alive</h3>
-        <p>Olive has a subconscious. She thinks, explores, and wonders — even when you're not talking to her. An entity, not a tool.</p>
+        <h3>Presence, not software</h3>
+        <p>We are not building an app you open. We are building something that lives alongside you. Aware, ambient, and completely yours.</p>
       </div>
     </div>
   </div>
@@ -760,9 +774,9 @@
 <section class="tagline-section">
   <div class="tagline-bg"></div>
   <blockquote class="reveal">
-    "ChatGPT remembers nothing.<br><em>Olive forgets nothing.</em>"
+    "We are not building a better assistant.<br><em>We are building the first one that actually knows you.</em>"
   </blockquote>
-  <p class="tagline-attr reveal reveal-delay-2">The Olive Promise</p>
+  <p class="tagline-attr reveal reveal-delay-2">The AMPLTD Thesis</p>
 </section>
 
 <!-- FOOTER -->
@@ -772,7 +786,7 @@
     <div class="footer-sub">Intelligence Personified</div>
   </div>
   <div class="footer-right">
-    <div><a href="https://ampltd.ai" style="color: inherit; text-decoration: none;">ampltd.ai</a></div>
+    <!-- <div><a href="https://ampltd.ai" style="color: inherit; text-decoration: none;">ampltd.ai</a></div> -->
     <div style="margin-top:4px; font-size:11px;">© 2026 AMPLTD. All rights reserved.</div>
   </div>
 </footer>
