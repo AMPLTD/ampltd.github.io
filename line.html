@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Line — AI-powered terminal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    /* ────────────────────────────── Reset & Vars ─────────────────────────── */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg:         #000000;
+      --surface:    #0a0a0a;
+      --surface2:   #0f0f0f;
+      --border:     #1c1c1c;
+      --border2:    #2a2a2a;
+      --green:      #5ffa68;
+      --green-dim:  rgba(95,250,104,0.12);
+      --green-glow: rgba(95,250,104,0.25);
+      --purple:     #a78bfa;
+      --text:       #e0e0e0;
+      --muted:      #555;
+      --muted2:     #888;
+      --mono:       'JetBrains Mono', 'Fira Code', 'SF Mono', monospace;
+    }
+
+    html, body { overflow: hidden; height: 100%; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
+      cursor: none;
+    }
+
+    /* ────────────────────────────── Custom cursor ───────────────────────── */
+    #cursor {
+      position: fixed;
+      width: 8px; height: 8px;
+      background: var(--green);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: transform 0.05s, width 0.2s, height 0.2s, opacity 0.2s;
+      mix-blend-mode: screen;
+    }
+    #cursor-ring {
+      position: fixed;
+      width: 32px; height: 32px;
+      border: 1px solid rgba(95,250,104,0.4);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9998;
+      transform: translate(-50%, -50%);
+      transition: transform 0.12s ease, width 0.3s, height 0.3s, opacity 0.3s;
+    }
+
+    /* ────────────────────────────── Canvas ──────────────────────────────── */
+    #bg-canvas {
+      position: fixed;
+      inset: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .layer { position: relative; z-index: 1; height: 100vh; }
+
+    /* ────────────────────────────── Nav ─────────────────────────────────── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 500;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 48px;
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.3s, background 0.3s;
+    }
+    nav.scrolled {
+      background: rgba(0,0,0,0.85);
+      backdrop-filter: blur(16px);
+      border-bottom-color: var(--border);
+    }
+    .nav-logo {
+      font-family: var(--mono);
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--green);
+      letter-spacing: 0.06em;
+      text-decoration: none;
+    }
+    .nav-links {
+      display: flex; gap: 36px; list-style: none;
+    }
+    .nav-links a {
+      color: var(--muted2);
+      text-decoration: none;
+      font-size: 13px;
+      letter-spacing: 0.02em;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--text); }
+    .btn-nav {
+      background: var(--green);
+      color: #000;
+      padding: 9px 22px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    .btn-nav:hover {
+      background: #fff;
+      box-shadow: 0 0 30px rgba(95,250,104,0.4);
+    }
+
+    /* ────────────────────────────── Hero ────────────────────────────────── */
+    .hero {
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 100px 24px 60px;
+      position: relative;
+    }
+    .hero-glow {
+      position: absolute;
+      top: 30%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 600px; height: 400px;
+      background: radial-gradient(ellipse at center, rgba(95,250,104,0.07) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--green-dim);
+      border: 1px solid rgba(95,250,104,0.2);
+      border-radius: 100px;
+      padding: 6px 16px;
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--green);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 32px;
+      opacity: 0;
+      animation: fadeUp 0.6s ease forwards 0.3s;
+    }
+    .badge-dot {
+      width: 6px; height: 6px;
+      background: var(--green);
+      border-radius: 50%;
+      animation: pulse 2s ease infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.8); }
+    }
+    .hero-title {
+      font-family: var(--mono);
+      font-size: clamp(90px, 16vw, 180px);
+      font-weight: 300;
+      letter-spacing: -0.04em;
+      line-height: 0.9;
+      color: #fff;
+      margin-bottom: 28px;
+      opacity: 0;
+      animation: fadeUp 0.8s ease forwards 0.5s;
+      position: relative;
+    }
+    .hero-title-glow {
+      position: absolute;
+      inset: -10%;
+      background: radial-gradient(ellipse at center, rgba(95,250,104,0.1) 0%, transparent 60%);
+      pointer-events: none;
+      animation: glowPulse 4s ease infinite;
+    }
+    @keyframes glowPulse {
+      0%, 100% { opacity: 0.6; }
+      50% { opacity: 1; }
+    }
+    .hero-sub {
+      font-size: clamp(16px, 2.5vw, 20px);
+      color: var(--muted2);
+      max-width: 500px;
+      line-height: 1.7;
+      margin-bottom: 44px;
+      opacity: 0;
+      animation: fadeUp 0.8s ease forwards 0.7s;
+    }
+    .hero-cta {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      margin-bottom: 72px;
+      opacity: 0;
+      animation: fadeUp 0.8s ease forwards 0.9s;
+      flex-wrap: wrap;
+    }
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      background: var(--bg);
+      color: #fff;
+      padding: 14px 32px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 15px;
+      text-decoration: none;
+      transition: all 0.25s;
+      box-shadow: 0 0 32px rgba(95,250,104,0.2);
+    }
+    .btn-primary:hover {
+      border: 1px solid white;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 40px rgba(255, 255, 255, 0.4);
+    }
+    .btn-ghost {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: transparent;
+      color: var(--muted2);
+      border: 1px solid var(--border2);
+      padding: 14px 28px;
+      border-radius: 8px;
+      font-size: 15px;
+      text-decoration: none;
+      transition: all 0.25s;
+    }
+    .btn-ghost:hover {
+      color: var(--text);
+      border-color: var(--muted);
+    }
+    .hero-terminal-wrap {
+      width: 100%;
+      max-width: 760px;
+      opacity: 0;
+      animation: fadeUp 1s ease forwards 1.1s;
+    }
+
+    /* ────────────────────────────── Terminal Window ─────────────────────── */
+    .term-win {
+      background: #080808;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 24px 64px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.04);
+    }
+    .term-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 11px 16px;
+      background: #0e0e0e;
+      border-bottom: 1px solid var(--border);
+      position: relative;
+    }
+    .tl { width: 12px; height: 12px; border-radius: 50%; }
+    .tl-r { background: #ff5f57; }
+    .tl-y { background: #febc2e; }
+    .tl-g { background: #28c840; }
+    .term-title {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--muted);
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+    .term-body {
+      padding: 18px 22px;
+      font-family: var(--mono);
+      font-size: 13px;
+      line-height: 1.9;
+      min-height: 260px;
+      overflow-y: auto;
+    }
+    .term-body::-webkit-scrollbar { width: 4px; }
+    .term-body::-webkit-scrollbar-thumb { background: #222; border-radius: 2px; }
+
+    .t-cursor {
+      display: inline-block;
+      width: 7px; height: 15px;
+      background: var(--green);
+      vertical-align: middle;
+      margin-left: 1px;
+      animation: blink 1s step-end infinite;
+    }
+    .t-cursor-purple { background: var(--purple); }
+    @keyframes blink {
+      50% { opacity: 0; }
+    }
+
+    /* Scanlines */
+    .scanlines { position: relative; }
+    .scanlines::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,0.04) 3px, rgba(0,0,0,0.04) 4px);
+      pointer-events: none;
+      border-radius: inherit;
+    }
+
+    /* ────────────────────────────── Animations ──────────────────────────── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ────────────────────────────── Scrollbar ───────────────────────────── */
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: #000; }
+    ::-webkit-scrollbar-thumb { background: #1c1c1c; border-radius: 3px; }
+
+    @media (max-width: 900px) {
+      nav { padding: 16px 24px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Cursor -->
+  <div id="cursor"></div>
+  <div id="cursor-ring"></div>
+
+  <!-- Background canvas -->
+  <canvas id="bg-canvas"></canvas>
+
+  <div class="layer">
+
+    <!-- NAV -->
+    <nav id="nav">
+      <a href="#" class="nav-logo">line</a>
+      <a href="#" class="btn-nav">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+          <path d="M7 1v8M4 7l3 3 3-3M1 11h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Download
+      </a>
+    </nav>
+
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero-glow"></div>
+      <div class="hero-badge">
+        <div class="badge-dot"></div>
+        AI-powered terminal for macOS
+      </div>
+      <h1 class="hero-title">
+        line
+        <div class="hero-title-glow"></div>
+      </h1>
+      <p class="hero-sub">Natural Language Terminal</p>
+      <div class="hero-cta">
+        <a href="#" class="btn-primary">
+          <!-- <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M8 2v9M5 8l3 3 3-3M2 13h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg> -->
+          <img src="https://cdn-icons-png.flaticon.com/512/0/747.png" alt="Apple logo" style="width:14px;filter:invert(1);">
+          MacOS Download
+        </a>
+      </div>
+      <div class="hero-terminal-wrap">
+        <div class="term-win scanlines" id="hero-win">
+          <div class="term-header">
+            <div class="tl tl-r"></div>
+            <div class="tl tl-y"></div>
+            <div class="tl tl-g"></div>
+            <div class="term-title">line — zsh — ~/projects</div>
+          </div>
+          <div class="term-body" id="hero-body" style="min-height:280px"></div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <script>
+  (() => {
+    'use strict';
+
+    const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+    // ── Custom cursor ──────────────────────────────────────────────────────
+    const cursor = document.getElementById('cursor');
+    const ring   = document.getElementById('cursor-ring');
+    let mx = 0, my = 0, rx = 0, ry = 0;
+    document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+    (function trackRing() {
+      rx += (mx - rx) * 0.14;
+      ry += (my - ry) * 0.14;
+      cursor.style.left = mx + 'px'; cursor.style.top = my + 'px';
+      ring.style.left   = rx + 'px'; ring.style.top  = ry + 'px';
+      requestAnimationFrame(trackRing);
+    })();
+    document.querySelectorAll('a, button').forEach(a => {
+      a.addEventListener('mouseenter', () => { cursor.style.transform = 'translate(-50%,-50%) scale(2)'; ring.style.opacity = '0'; });
+      a.addEventListener('mouseleave', () => { cursor.style.transform = 'translate(-50%,-50%) scale(1)'; ring.style.opacity = '1'; });
+    });
+
+    // ── Background dot grid ────────────────────────────────────────────────
+    const bgCanvas = document.getElementById('bg-canvas');
+    const bgCtx = bgCanvas.getContext('2d');
+    let W, H, grid;
+
+    function resizeBg() {
+      W = bgCanvas.width  = window.innerWidth;
+      H = bgCanvas.height = window.innerHeight;
+      buildGrid();
+    }
+    function buildGrid() {
+      grid = [];
+      const sp = 44;
+      for (let y = 0; y <= H + sp; y += sp)
+        for (let x = 0; x <= W + sp; x += sp)
+          grid.push({ x, y, phase: Math.random() * Math.PI * 2, speed: 0.008 + Math.random() * 0.008 });
+    }
+    let t = 0;
+    function drawBg() {
+      bgCtx.clearRect(0, 0, W, H);
+      t += 0.006;
+      for (const d of grid) {
+        const base = 0.025 + Math.sin(t * d.speed * 60 + d.phase) * 0.015;
+        const dx = d.x - mx, dy = d.y - my;
+        const dist = Math.sqrt(dx*dx + dy*dy);
+        const boost = dist < 140 ? (1 - dist/140) * 0.18 : 0;
+        const alpha = Math.min(base + boost, 0.35);
+        bgCtx.beginPath();
+        bgCtx.arc(d.x, d.y, 1.1, 0, Math.PI*2);
+        bgCtx.fillStyle = `rgba(95,250,104,${alpha})`;
+        bgCtx.fill();
+      }
+      requestAnimationFrame(drawBg);
+    }
+    window.addEventListener('resize', resizeBg);
+    resizeBg(); drawBg();
+
+    function appendLine(container, {html='', color='', style=''} = {}) {
+      const d = document.createElement('div');
+      if (color)  d.style.color = color;
+      if (style)  d.style.cssText += style;
+      if (html)   d.innerHTML = html;
+      container.appendChild(d);
+      container.scrollTop = container.scrollHeight;
+      return d;
+    }
+
+    function addCursor(parent, cls='') {
+      const c = document.createElement('span');
+      c.className = 't-cursor' + (cls ? ' ' + cls : '');
+      parent.appendChild(c);
+      return c;
+    }
+
+    // ── Hero terminal ──────────────────────────────────────────────────────
+    const heroBody = document.getElementById('hero-body');
+
+    const heroScripts = [
+      {
+        nl:   'find all node_modules folders and show total size',
+        cmd:  'find . -name "node_modules" -type d | xargs du -sh 2>/dev/null | sort -rh',
+        outs: [
+          '<span style="color:#5ffa68">1.2G</span>\t<span style="color:#666">./frontend/node_modules</span>',
+          '<span style="color:#5ffa68">840M</span>\t<span style="color:#666">./backend/node_modules</span>',
+          '<span style="color:#5ffa68">112M</span>\t<span style="color:#666">./packages/ui/node_modules</span>',
+        ]
+      }
+    ];
+
+    async function runHero() {
+      await sleep(1600);
+      const s = heroScripts[0];
+      {
+
+        // NL prompt
+        const row = appendLine(heroBody, { color: '#5ffa68' });
+        const promptSpan = document.createElement('span');
+        promptSpan.textContent = '~/projects >';
+        promptSpan.style.marginRight = '8px';
+        row.appendChild(promptSpan);
+
+        const nlSpan = document.createElement('span');
+        nlSpan.style.color = '#a78bfa';
+        row.appendChild(nlSpan);
+
+        const cur1 = addCursor(row, 't-cursor-purple');
+        await sleep(300);
+        for (const ch of s.nl) {
+          nlSpan.textContent += ch;
+          await sleep(38 + Math.random() * 20);
+        }
+        cur1.remove();
+        await sleep(400);
+
+        // Thinking
+        const thinking = appendLine(heroBody, { color: '#2a2a2a', html: '  ↳ thinking...' });
+        await sleep(700);
+        thinking.remove();
+
+        // Command
+        const cmdRow = appendLine(heroBody, {});
+        const arr = document.createElement('span');
+        arr.style.color = 'rgba(95,250,104,0.45)';
+        arr.textContent = '  →  ';
+        cmdRow.appendChild(arr);
+
+        const cmdSpan = document.createElement('span');
+        cmdSpan.style.color = '#e0e0e0';
+        cmdRow.appendChild(cmdSpan);
+
+        const cur2 = addCursor(cmdRow);
+        for (const ch of s.cmd) {
+          cmdSpan.textContent += ch;
+          await sleep(28 + Math.random() * 15);
+        }
+        cur2.remove();
+        await sleep(350);
+
+        // Execute (echo the command as if typed)
+        const execRow = appendLine(heroBody, {});
+        const ps2 = document.createElement('span');
+        ps2.style.color = '#5ffa68';
+        ps2.textContent = '~/projects $  ';
+        execRow.appendChild(ps2);
+        const ec = document.createElement('span');
+        ec.style.color = '#888';
+        ec.textContent = s.cmd;
+        execRow.appendChild(ec);
+
+        // Outputs
+        for (const o of s.outs) {
+          await sleep(70);
+          appendLine(heroBody, { html: o });
+        }
+
+        appendLine(heroBody, {});
+        heroBody.scrollTop = heroBody.scrollHeight;
+      }
+    }
+
+    setTimeout(runHero, 200);
+
+  })();
+  </script>
+</body>
+</html>
